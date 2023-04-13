@@ -1,0 +1,119 @@
+\documentclass{article}
+
+\title{Sztuczna inteligencja}
+\author{Dominik Lau}
+
+\usepackage{blindtext}
+\usepackage{amsmath}
+\usepackage[utf8]{inputenc}
+\usepackage[polish]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{amssymb}
+\usepackage{esvect}
+\usepackage{graphicx}
+\usepackage{hyperref}
+
+
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+  language=Python,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+
+\graphicspath{ {./media/} }
+\begin{document}
+\maketitle
+\section{Wstęp}
+Celem projektu było zaimplementowanie i przeanalizowanie dwóch
+algorytmów interpolacji na wybranych profilach wysokościowych - metody wykorzystującej wielomian Lagrange oraz metody z funkcjami sklejanymi trzeciego stopnia.
+Do implementacji wykorzystano język $Python$ oraz biblioteki
+$matplotib$, $pandas$.
+\section{Teoria}
+W obu przypadkach zakładamy, że mamy pewien zestaw $n+1$ punktów
+\begin{gather*}
+	(x_0, y_0) \\
+	(x_1, y_1) \\
+	...\\
+	(x_n, y_n)
+\end{gather*}
+i chcemy znaleźć taką funkcję $F(x)$, że
+\begin{gather*}
+	\forall_{i= 0..n}  F(x_i) = y_i
+\end{gather*}
+dobrze określającą, jakie wartości przyjmują $y$ w punktach $x \notin \{x_0, ..., x_n\}$
+\subsection{Metoda Lagrange}
+W metodzie tej funkcja $F$ ma postać
+\begin{gather*}
+	F(x) = \Sigma_{i=0}^{n} y_i \phi_i(x)
+\end{gather*}
+gdzie 
+\begin{gather*}
+	\phi_i(x) = \Pi_{j=0,  j \ne i}^{n+1} \frac{x-x_j}{x_i - x_j}
+\end{gather*}
+jest \textbf{bazą Lagrange'a}. Metoda ta zwraca takie same wyniki
+jak metoda Vandermonde, jednak nie musimy rozwiązywać układu równań liniowych
+\subsection{Metoda krzywych sklejanych 3. stopnia}
+w tej metodzie funkcja $F$ ma postać
+\begin{gather*}
+	F(x) = S_i(x); x\in [x_i, x_{i+1}]
+\end{gather*}
+czyli przedstawiamy ją jako szereg połączonych wielomianów $S_i(x)$ takich, że
+\begin{gather*}
+	deg (S_i) = 3
+\end{gather*}
+w celu uzyskania układów równań, z których pozyskamy współczynniki $S_i(x)$ przyjmujemy założenia
+\begin{gather*}
+	S_i(x_i) = y_i \\
+	S_i(x_{i+1}) = y_{i+1} \\
+	S_{j-1}'(x_i) = S_{j}'(x_i); x = 1..n-1 \\
+	S_{j-1}''(x_i) = S_{j}''(x_i); x = 1..n-1 \\
+	S_0''(x_0) = 0 \\
+	S_{n-1}'' (x_n) = 0 \\
+\end{gather*}
+znalezienie wielomianów $S$ sprowadza się do rozwiązania powyższego układu równań
+%z których otrzymujemy wzór ogólny na $S_i(x)$
+%\begin{gather*}
+%	S_i(x) = \frac{(x - x_{i-1})^3f''(x_i)}{6h_i} 
+%+ \frac{(x_i - x)^3f''(x_{i-1})}{6h_i} 
+%\\+ (\frac{y_i}{h_i} - \frac{h_if''(x_{i})}{6})(x - x_{i-1})
+%+ (\frac{y_{i-1}}{h_i} - \frac{h_if''(x_{i-1})}{6})(x_{i} - x)
+%\end{gather*}
+%gdzie $h_i = x_i - x_{i-1}$,
+%$f''(x_i) $ - wartość 2. pochodnej interpolowanej funkcji w punkcie $x_i$
+%(sprowadza się to do rozwiązania układu równań)
+\section{Wybrane profile wysokościowe}
+Do analizy wybrano następujące profile wysokościowe
+\begin{itemize}
+	\item ścieżkę Yoshidy na górę Fuji - jedno duże wzniesienie
+	\item trasę Al.  Ujazdowskie-Łazienki-Solec - trasa głównie płaska
+	\item trasę wokół centrum Słupska - wiele nagłych (ale niedużych) wzniesień
+\end{itemize}
+\section{Trasa na górę Fuji}
+\section{Trasa w Warszawie}
+\section{Trasa wokół centrum Słupska}
+\section{Źródła}
+\begin{itemize}
+	\item \href{https://en.wikipedia.org/w/index.php?title=Spline_%28mathematics%29&oldid=288288033#Algorithm_for_computing_natural_cubic_splines}{Wikipedia-Spline}
+\end{itemize}
+
+\end{document}
+
+
