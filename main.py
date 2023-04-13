@@ -37,9 +37,10 @@ def linspace(start, stop, n):
         yield start + h * i
 
 
-def lagrange(X, Y, num_interpolation=9, num_evaluated=1000):
+def lagrange(X, Y, num_interpolation=9, num_evaluated=1000, indexes=None):
 
-    indexes = [int(i) for i in linspace(0, len(X) - 1, num_interpolation)]
+    if indexes is None:
+        indexes = [int(i) for i in linspace(0, len(X) - 1, num_interpolation)]
 
     def F(x):
         return sum(
@@ -55,54 +56,9 @@ def lagrange(X, Y, num_interpolation=9, num_evaluated=1000):
     return interpolated_X, interpolated_Y, indexes
 
 
-def splines(X, Y, num_interpolation=6, num_evaluated=1000):
-    indexes = [int(i) for i in linspace(0, len(X) - 1, num_interpolation)]
-    n = len(indexes)
-    a = [Y[ix] for ix in indexes]
-    b = [0 for _ in indexes]
-    c = [0 for _ in indexes]
-    d = [0 for _ in indexes]
-
-    # helper variables for solving matrix
-    h = [X[indexes[i+1]] - X[indexes[i]] for i in range(n-1)]
-    alpha = [0 for _ in indexes]
-    alpha[1:n-1] = [3/h[i] * (a[i+1] - a[i]) - 3/h[i-1] * (a[i] - a[i-1]) for i in range(1,n-1)]
-
-    z = [0 for _ in indexes]   # second derivative values
-    l = [0 for _ in indexes]   # helper array for second derivative
-    mu = [0 for _ in indexes]  # helper array for ^^^
-
-    l[0] = 1
-    # derivatives
-    for i in range(1, n-1):
-        l[i] = 2*(X[indexes[i+1]] - X[indexes[i-1]]) - h[i-1] * mu[i-1]
-        mu[i] = h[i]/l[i]
-        z[i] = (alpha[i] - h[i-1] * z[i-1])/l[i]
-
-    # solve using general expression
-    l[n-1] = 1
-    for i in range(n-2, -1, -1):
-        c[i] = z[i] - mu[i] * c[i+1]
-        b[i] = (a[i+1] - a[i])/h[i] - h[i] * (c[i+1] + 2 * c[i])/3
-        d[i] = (c[i+1] - c[i])/(3 * h[i])
-
-    def F(x):
-        ix = n-1
-        for ix_num in range(len(indexes) - 1):
-            if X[indexes[ix_num]] < x < X[indexes[ix_num + 1]]:
-                ix = ix_num
-                break
-
-        h = x-X[indexes[ix]]
-        return a[ix] + b[ix] * h + c[ix] * h**2 + d[ix] * h** 3
-
-    interpolated_X = list(linspace(X[0], X[-1], num_evaluated))
-    interpolated_Y = [F(x) for x in interpolated_X]
-    return interpolated_X, interpolated_Y, indexes
-
-
-def splines2(X, Y, num_interpolation=15, num_evaluated=1000):
-    indexes = [int(i) for i in linspace(0, len(X) - 1, num_interpolation)]
+def splines(X, Y, num_interpolation=15, num_evaluated=1000, indexes=None):
+    if indexes is None:
+        indexes = [int(i) for i in linspace(0, len(X) - 1, num_interpolation)]
     n = len(indexes)
     a = [Y[ix] for ix in indexes]
     b = []
@@ -118,7 +74,7 @@ def splines2(X, Y, num_interpolation=15, num_evaluated=1000):
         A[i][i] = 2 * (h[i-1] + h[i])
         A[i][i-1] = h[i-1]
         A[i][i+1] = h[i]
-        vec[i][0] = 3 * ((Y[indexes[i+1]] - Y[indexes[i]])/h[i] - (Y[indexes[i]] - Y[indexes[i-1]])/h[i])
+        vec[i][0] = 3 * ((Y[indexes[i+1]] - Y[indexes[i]])/h[i] - (Y[indexes[i]] - Y[indexes[i-1]])/h[i-1])
 
     A[0][0] = 1
     A[n-1][n-1] = 1
@@ -136,7 +92,7 @@ def splines2(X, Y, num_interpolation=15, num_evaluated=1000):
     def F(x):
         ix = n-1
         for ix_num in range(len(indexes) - 1):
-            if X[indexes[ix_num]] < x < X[indexes[ix_num + 1]]:
+            if X[indexes[ix_num]] <= x < X[indexes[ix_num + 1]]:
                 ix = ix_num
                 break
 
@@ -147,6 +103,7 @@ def splines2(X, Y, num_interpolation=15, num_evaluated=1000):
     interpolated_Y = [F(x) for x in interpolated_X]
 
     return interpolated_X, interpolated_Y, indexes
+
 
 def evenly_spaced_plots(filename, title, interpolations=(6, 9, 15), interp_function=lagrange):
     X, Y = read_profile(filename)
@@ -164,20 +121,30 @@ def evenly_spaced_plots(filename, title, interpolations=(6, 9, 15), interp_funct
         axis[num_axis].plot(X, Y)
         axis[num_axis].plot(x, y)
         axis[num_axis].scatter([X[i] for i in ixs], [Y[i] for i in ixs], c='g')
-        axis[num_axis].legend(["dane", "wielomian Lagrange'a", "punkty węzłowe"])
+        axis[num_axis].legend(["dane", "wielomian", "punkty węzłowe"])
 
     plt.show()
 
 
-X, Y = read_profile(PROFILE1)
-x, y, _ = splines2(X, Y)
-plt.plot(X,Y)
-plt.plot(x, y)
-plt.show()
+def plots_specific_indexes(filename, title, indexes, interpolations=9, interp_function=lagrange):
+    X, Y = read_profile(filename)
+    x, y, ixs = interp_function(X, Y, indexes=indexes)
 
-# evenly_spaced_plots(PROFILE1, "Lagrange: Trasa Yoshidy na górę Fuji", interp_function=lagrange)
-# evenly_spaced_plots(PROFILE1, "Spline'y: Trasa Yoshidy na górę Fuji", interp_function=splines)
-# evenly_spaced_plots(PROFILE2, "Lagrange: Al. Ujazdowskie-Łazienki-Solec", interp_function=lagrange)
-# evenly_spaced_plots(PROFILE2, "Spline'y: Al. Ujazdowskie-Łazienki-Solec", interp_function=splines)
-# evenly_spaced_plots(PROFILE3, "Lagrange: Wokół centrum Słupska", interp_function=lagrange)
-# evenly_spaced_plots(PROFILE3, "Spline'y: Wokół centrum Słupska", interp_function=splines)
+    plt.title(f"nierównomierne punkty węzłowe: {title}")
+    plt.xlabel("odległość [m]")
+    plt.ylabel("wysokość [m]")
+    plt.plot(X, Y)
+    plt.plot(x, y)
+    plt.scatter([X[i] for i in ixs], [Y[i] for i in ixs], c='g')
+    plt.legend(["dane", "wielomian", "punkty węzłowe"])
+    plt.show()
+
+
+evenly_spaced_plots(PROFILE1, "Lagrange: Trasa Yoshidy na górę Fuji", interp_function=lagrange)
+evenly_spaced_plots(PROFILE1, "Spline'y: Trasa Yoshidy na górę Fuji", interp_function=splines)
+evenly_spaced_plots(PROFILE2, "Lagrange: Al. Ujazdowskie-Łazienki-Solec", interp_function=lagrange)
+evenly_spaced_plots(PROFILE2, "Spline'y: Al. Ujazdowskie-Łazienki-Solec", interp_function=splines)
+evenly_spaced_plots(PROFILE3, "Lagrange: Wokół centrum Słupska", interp_function=lagrange)
+evenly_spaced_plots(PROFILE3, "Spline'y: Wokół centrum Słupska", interp_function=splines)
+
+plots_specific_indexes(PROFILE1, "Lagrange:Trasa Yoshidy na górę Fuji", indexes=[0, 100, 150, 200, 511], interp_function=lagrange)
