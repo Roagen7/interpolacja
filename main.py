@@ -131,6 +131,7 @@ def plots_specific_indexes(filename, title, indexes, interp_function=lagrange):
     X, Y = read_profile(filename)
     x, y, ixs = interp_function(X, Y, indexes=indexes)
 
+
     plt.title(f"nierównomierne punkty węzłowe: {title}")
     plt.xlabel("odległość [m]")
     plt.ylabel("wysokość [m]")
@@ -139,8 +140,14 @@ def plots_specific_indexes(filename, title, indexes, interp_function=lagrange):
     plt.scatter([X[i] for i in ixs], [Y[i] for i in ixs], c='g')
     plt.legend(["dane", "interpolacja", "punkty węzłowe"])
 
-
     plt.show()
+
+def generate_czebyszew(N):
+    import math
+
+    def fu(k):
+        return 511/2 * math.cos((2 * k + 1)/(2 * N) * math.pi) + 511/2
+    return [int(fu(k)) for k in range(N-1, -1, -1)] + [511]
 
 # evenly_spaced_plots(PROFILE1, "Lagrange: Trasa Yoshidy na górę Fuji", interp_function=lagrange)
 # evenly_spaced_plots(PROFILE1, "Spline'y: Trasa Yoshidy na górę Fuji", interp_function=splines)
@@ -173,6 +180,11 @@ def plots_specific_indexes(filename, title, indexes, interp_function=lagrange):
 # plots_specific_indexes(PROFILE3, "Spline'y: Wokół centrum Słupska",
 #                        indexes=[0, 10, 20, 40, 50, 100, 150, 200, 250, 300, 350, 400, 450, 470, 480, 490,500, 511],
 #                        interp_function=splines)
-evenly_spaced_plots(PROFILE3, "Spline'y: Wokół centrum Słupska", interp_function=splines, interpolations=(5, 15, 35))
+# evenly_spaced_plots(PROFILE3, "Spline'y: Wokół centrum Słupska", interp_function=splines, interpolations=(5, 15, 35))
 
-
+plots_specific_indexes(PROFILE3, "Lagrange: eliminacja efektu Runge'go",
+                       indexes=generate_czebyszew(30),
+                       interp_function=lagrange)
+plots_specific_indexes(PROFILE3, "Spline: porównanie dla 31 punktów",
+                       indexes=None,
+                       interp_function=splines)
