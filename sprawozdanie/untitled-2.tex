@@ -193,6 +193,14 @@ Podobnego efektu nie ma dla metody krzywych sklejanych.
  \begin{center}
 	\includegraphics[width=8cm]{spline_slupsk_krance}
 \end{center}
+ \begin{center}
+	\includegraphics[width=12cm]{spline_slupsk_uniform}
+\end{center}
+Tak prezentują się wyniki dla krzywych sklejanych. \textbf{5 punktów węzłowych to za mało próbek, żeby trafnie oddać kształt tego profilu wysokościowego} i tyczy się 
+to obu metod. Dla 35 punktów węzłowych otrzymujemy tak jak w przypadku trasy w Warszawie dokładne odzwierciedlenie oryginalnej funkcji. 
+Ciekawe i potencjalnie użyteczne zjawisko obserwujemy dla 15 punktów, bo chociaż interpolacja nie jest jeszcze dokładna, to stanowi to dobry filtr
+wartości szybkozmiennych, który jak wcześniej wspomniano \textbf{może posłużyć w przetwarzaniu sygnałów}.
+
 \section{Eliminacja efektu Rungego}
 We wszystkich powyższych podpunktach głównym problemem metody interpolacji wielomianowej był efekt Rungego. Doszliśmy do wniosku, że istnieje 
 pewna zależność między rozmieszczeniem punktów węzłowych a nasileniem tego efektu. Czy jesteśmy zatem w stanie określić tą zależność w celu wyznaczenia
@@ -209,12 +217,19 @@ rozmieścimy teraz węzły zgodnie z powyższym wzorem dla przypadku, w których
  \begin{center}
 	\includegraphics[width=8cm]{lagrange_runge_gone}
 \end{center}
-jak widać efekt Rungego został wyeliminowany, natomiast interpolacja jest gorsza niż gdyby użyć krzywych sklejanych dla 31 punktów:
+jak widać \textbf{efekt Rungego został wyeliminowany, natomiast interpolacja jest gorsza niż gdyby użyć krzywych sklejanych} dla 31 punktów:
  \begin{center}
 	\includegraphics[width=8cm]{spline_runge_comparison}
 \end{center}
 dlatego nawet jeśli udało nam się pozbyć efektu Rungego należałoby się zastanowić czy nie lepiej dla naszego zastosowania użyć mimo wszystko krzywych sklejanych.
 \section{Podsumowanie}
+Reasumując, obie metody są przydatne, jednak \textbf{użyteczność interpolacji wielomianowej z wykorzystaniem wielomianu Laplace'a jest ograniczona przez 
+efekt Rungego}. Zjawisko to powoduje oscylacje na krańcach przedziału wraz ze wzrostem ilości punktów węzłowych, więc paradoksalnie pogarsza jakość interpolacji
+przy zwiększaniu złożoności  obliczeniowej i punktów pomiarowych. Wady tej nie mają krzywe sklejane, które są pod każdym względem lepsze od metody wielomianowej.
+W efekcie ich użycia otrzymujemy dokładniejsze wartości interpolacji, ponadto wiernośc odwzorowania wzrasta wraz ze wzrostem liczby węzłów.  \textbf{Krzywe sklejane
+radzą sobie zarówno z terenami o wolnozmiennym nachyleniu jak i o nagłych zmianach nachylenia}, czego nie można powiedzieć o metodzie wielomianowej, która 
+ma problem z "ostrymi" krawędziami funkcji (gwałtownymi zmianami). Efekt Rungego można wyeliminować za pomocą węzłów Czebyszewa, tym samym zwiększając
+zakres zastosowań interpolacji wielomianowej. Obie metody nadają się również jako \textbf{filtr dolnoprzepustowy} do przetwarzania sygnałów. 
 \section{Źródła}
 \begin{itemize}
 	\item \href{https://en.wikipedia.org/w/index.php?title=Spline_%28mathematics%29&oldid=288288033#Algorithm_for_computing_natural_cubic_splines}{Wikipedia-Spline}

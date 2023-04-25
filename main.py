@@ -180,11 +180,11 @@ def generate_czebyszew(N):
 # plots_specific_indexes(PROFILE3, "Spline'y: Wokół centrum Słupska",
 #                        indexes=[0, 10, 20, 40, 50, 100, 150, 200, 250, 300, 350, 400, 450, 470, 480, 490,500, 511],
 #                        interp_function=splines)
-# evenly_spaced_plots(PROFILE3, "Spline'y: Wokół centrum Słupska", interp_function=splines, interpolations=(5, 15, 35))
+evenly_spaced_plots(PROFILE3, "Spline'y: Wokół centrum Słupska", interp_function=splines, interpolations=(5, 15, 35))
 
-plots_specific_indexes(PROFILE3, "Lagrange: eliminacja efektu Runge'go",
-                       indexes=generate_czebyszew(30),
-                       interp_function=lagrange)
-plots_specific_indexes(PROFILE3, "Spline: porównanie dla 31 punktów",
-                       indexes=None,
-                       interp_function=splines)
+# plots_specific_indexes(PROFILE3, "Lagrange: eliminacja efektu Runge'go",
+#                        indexes=generate_czebyszew(30),
+#                        interp_function=lagrange)
+# plots_specific_indexes(PROFILE3, "Spline: porównanie dla 31 punktów",
+#                        indexes=None,
+#                        interp_function=splines)
