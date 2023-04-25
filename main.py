@@ -10,6 +10,7 @@ from jacobi import jacobi
 matplotlib.use("MacOSX")
 
 DATA_DIR = "dane/"
+MEDIA_DIR = "sprawozdanie/media/"
 PROFILE1 = "fuji_yoshida_trail"
 PROFILE2 = "uj_laz_sol"
 PROFILE3 = "slupsk"
@@ -121,12 +122,12 @@ def evenly_spaced_plots(filename, title, interpolations=(6, 9, 15), interp_funct
         axis[num_axis].plot(X, Y)
         axis[num_axis].plot(x, y)
         axis[num_axis].scatter([X[i] for i in ixs], [Y[i] for i in ixs], c='g')
-        axis[num_axis].legend(["dane", "wielomian", "punkty węzłowe"])
+        axis[num_axis].legend(["dane", "interpolacja", "punkty węzłowe"])
 
     plt.show()
 
 
-def plots_specific_indexes(filename, title, indexes, interpolations=9, interp_function=lagrange):
+def plots_specific_indexes(filename, title, indexes, interp_function=lagrange):
     X, Y = read_profile(filename)
     x, y, ixs = interp_function(X, Y, indexes=indexes)
 
@@ -136,15 +137,42 @@ def plots_specific_indexes(filename, title, indexes, interpolations=9, interp_fu
     plt.plot(X, Y)
     plt.plot(x, y)
     plt.scatter([X[i] for i in ixs], [Y[i] for i in ixs], c='g')
-    plt.legend(["dane", "wielomian", "punkty węzłowe"])
+    plt.legend(["dane", "interpolacja", "punkty węzłowe"])
+
+
     plt.show()
 
+# evenly_spaced_plots(PROFILE1, "Lagrange: Trasa Yoshidy na górę Fuji", interp_function=lagrange)
+# evenly_spaced_plots(PROFILE1, "Spline'y: Trasa Yoshidy na górę Fuji", interp_function=splines)
+# plots_specific_indexes(PROFILE1, "Lagrange:Trasa Yoshidy na górę Fuji",
+#                        indexes=[0, 15, 40, 50, 100, 150, 200, 250, 300, 350, 400, 450, 470, 500, 511],
+#                        interp_function=lagrange)
+# plots_specific_indexes(PROFILE1, "Spline'y:Trasa Yoshidy na górę Fuji",
+#                        indexes=[0, 100, 150, 210, 220, 235, 250,260, 350, 400, 511],
+#                        interp_function=splines)
 
-evenly_spaced_plots(PROFILE1, "Lagrange: Trasa Yoshidy na górę Fuji", interp_function=lagrange)
-evenly_spaced_plots(PROFILE1, "Spline'y: Trasa Yoshidy na górę Fuji", interp_function=splines)
-evenly_spaced_plots(PROFILE2, "Lagrange: Al. Ujazdowskie-Łazienki-Solec", interp_function=lagrange)
-evenly_spaced_plots(PROFILE2, "Spline'y: Al. Ujazdowskie-Łazienki-Solec", interp_function=splines)
-evenly_spaced_plots(PROFILE3, "Lagrange: Wokół centrum Słupska", interp_function=lagrange)
-evenly_spaced_plots(PROFILE3, "Spline'y: Wokół centrum Słupska", interp_function=splines)
+# evenly_spaced_plots(PROFILE2, "Lagrange: Al. Ujazdowskie-Łazienki-Solec", interp_function=lagrange, interpolations=(9, 12, 15))
+# evenly_spaced_plots(PROFILE2, "Spline'y: Al. Ujazdowskie-Łazienki-Solec", interp_function=splines, interpolations=(15, 45))
+# plots_specific_indexes(PROFILE2, "Lagrange: Al. Ujazdowskie-Łazienki-Solec",
+#                        indexes=[0, 100,150,  220, 235, 250, 300, 350, 450, 511],
+#                        interp_function=lagrange)
+# plots_specific_indexes(PROFILE2, "Lagrange: Al. Ujazdowskie-Łazienki-Solec",
+#                        indexes=[0, 15, 40, 50, 100, 150, 200, 250, 300, 350, 400, 450, 470, 500, 511],
+#                        interp_function=lagrange)
 
-plots_specific_indexes(PROFILE1, "Lagrange:Trasa Yoshidy na górę Fuji", indexes=[0, 100, 150, 200, 511], interp_function=lagrange)
+
+# evenly_spaced_plots(PROFILE3, "Lagrange: Wokół centrum Słupska", interp_function=lagrange, interpolations=(5, 9))
+
+# plots_specific_indexes(PROFILE3, "Lagrange: Wokół centrum Słupska",
+#                        indexes=[0, 15, 40, 50, 100, 150, 200, 250, 300, 350, 400, 450, 470, 500, 511],
+#                        interp_function=lagrange)
+#
+# plots_specific_indexes(PROFILE3, "Lagrange: Wokół centrum Słupska",
+#                        indexes=[0, 10, 20, 40, 50, 100, 150, 200, 250, 300, 350, 400, 450, 470, 480, 490,500, 511],
+#                        interp_function=lagrange)
+# plots_specific_indexes(PROFILE3, "Spline'y: Wokół centrum Słupska",
+#                        indexes=[0, 10, 20, 40, 50, 100, 150, 200, 250, 300, 350, 400, 450, 470, 480, 490,500, 511],
+#                        interp_function=splines)
+evenly_spaced_plots(PROFILE3, "Spline'y: Wokół centrum Słupska", interp_function=splines, interpolations=(5, 15, 35))
+
+
